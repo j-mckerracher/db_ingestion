@@ -12,7 +12,7 @@ folder_path = "time_series"
 
 timezone = pytz.timezone('MST')
 
-filename = r""
+filename = r"job_ts_metrics_july2022_anon.csv"
 
 try:
     print(connection.get_dsn_parameters(), "\n")
