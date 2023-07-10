@@ -39,10 +39,11 @@ try:
                     'value',
                     'unit',
                     'time'), sep=',', null="")
-                conn.commit()
+
                 current_time = datetime.now(timezone)
                 formatted_time = current_time.strftime("%H:%M:%S")
                 print(f"Finished working on {filename} at {formatted_time}.")
+    conn.commit()
 except (Exception, psycopg2.Error) as error:
     print("Error while connecting to PostgreSQL", error)
 finally:
