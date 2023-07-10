@@ -11,7 +11,7 @@ cur = conn.cursor()
 print(conn.get_dsn_parameters(), "\n")
 
 # Directory path containing the CSV files
-directory_path = "JobResourceUsage"
+directory_path = "/mnt/data/JobResourceUsage"
 
 try:
     # Iterate over each file in the directory
