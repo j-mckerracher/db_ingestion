@@ -26,7 +26,7 @@ try:
         print(f"Started working on {filename} at {formatted_time}.")
 
         # Use copy_from to run the COPY command
-        cur.copy_from(f, 'host_data', columns=('jid', 'host', 'event', 'value', 'unit', 'time'), sep='\t', null="")
+        cur.copy_from(f, 'host_data', columns=('jid', 'host', 'event', 'value', 'unit', 'time'), sep=',', null="")
 
     conn.commit()
 except (Exception, psycopg2.Error) as error:
