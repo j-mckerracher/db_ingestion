@@ -34,6 +34,9 @@ try:
                 'Wall Time',
                 'Eligible Time'
             ])
+            # Transform Hosts column to PostgreSQL array literal format
+            df['Hosts'] = df['Hosts'].apply(lambda x: '{' + x.replace(',', ' ') + '}')
+
             df.to_csv(file_path, index=False)
 
             # Open the CSV file
