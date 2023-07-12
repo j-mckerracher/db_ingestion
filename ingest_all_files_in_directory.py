@@ -25,15 +25,15 @@ try:
 
             # use pandas to drop columns that we don't need
             df = pd.read_csv(file_path)
-            df = df.drop(columns=[
-                'Shared',
-                'Cpu Time',
-                'Node Time',
-                'Requested Nodes',
-                'Wait Time',
-                'Wall Time',
-                'Eligible Time'
-            ])
+            # df = df.drop(columns=[
+            #     'Shared',
+            #     'Cpu Time',
+            #     'Node Time',
+            #     'Requested Nodes',
+            #     'Wait Time',
+            #     'Wall Time',
+            #     'Eligible Time'
+            # ])
             # Transform Hosts column to PostgreSQL array literal format
             df['Hosts'] = df['Hosts'].apply(lambda x: '{' + x.replace(',', ' ') + '}')
 
