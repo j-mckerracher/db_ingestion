@@ -2,6 +2,7 @@ import os
 import psycopg2
 import pandas as pd
 import tempfile
+import re
 
 # Establish a connection to the PostgreSQL database
 conn = psycopg2.connect(host="frescodb", dbname="anvil", user="admin", password=f"{os.getenv('DBPW')}")
@@ -26,8 +27,8 @@ try:
             df.drop(columns=['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time',
                              'Eligible Time'], errors='ignore', inplace=True)
 
-            # Transform Hosts column to a comma-separated string enclosed in braces
-            df['Hosts'] = df['Hosts'].str.replace(' ', ',').apply(lambda x: '{' + x + '}')
+            # Transform Hosts column to a string enclosed in braces with elements separated by pipe characters
+            df['Hosts'] = df['Hosts'].apply(lambda x: '{' + re.sub(r'\s+', '|', x) + '}')
 
             # Rename columns to match the database schema
             df.rename(columns={
@@ -86,10 +87,10 @@ try:
                 # Commit the changes
             conn.commit()
 
-    # After all files have been processed, convert the host_list column to an array within the database
+    # After all files have been processed, replace pipe characters back to commas and convert the host_list column to an array within the database
     cur.execute("""
         UPDATE job_data
-        SET host_list = string_to_array(host_list, ',')
+        SET host_list = string_to_array(replace(host_list, '|', ','), ',')
     """)
     conn.commit()
 
