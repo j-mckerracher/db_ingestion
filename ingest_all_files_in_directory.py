@@ -50,6 +50,11 @@ try:
                 'Job Name': 'jobname'
             }, inplace=True)
 
+            # Convert date columns to the correct format
+            date_columns = ['end_time', 'start_time', 'submit_time']
+            for col in date_columns:
+                df[col] = pd.to_datetime(df[col]).dt.strftime('%Y-%m-%d %H:%M:%S')
+
             # Define the order of the columns to match the database
             column_order = ['account', 'jid', 'ncores', 'ngpus', 'nhosts', 'timelimit', 'queue',
                             'end_time', 'start_time', 'submit_time', 'username', 'exitcode',
