@@ -73,7 +73,7 @@ try:
             # Debugging -> Re-open the temporary file in read mode to print
             with open(temp_file.name, 'r') as f:
                 # Read the first few lines
-                lines = [next(f) for _ in range(5)]
+                lines = [next(f) for _ in range(50)]
             print(''.join(lines))
 
             temp_file.close()
