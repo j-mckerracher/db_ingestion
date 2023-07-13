@@ -42,7 +42,7 @@ try:
             df = df.drop(columns=[col for col in drop_columns if col in df.columns])
 
             # Transform Hosts column to PostgreSQL array literal format
-            df['Hosts'] = df['Hosts'].apply(lambda x: '{' + x.replace(',', ' ') + '}')
+            df['Hosts'] = df['Hosts'].apply(lambda x: '{' + x.replace(',', ' ') + '}' if isinstance(x, str) else x)
 
             # Ensure the CSV column order matches the table column order
             df = df.reindex(columns=[
