@@ -25,7 +25,9 @@ try:
 
             # use pandas to drop columns that we don't need
             df = pd.read_csv(file_path)
-            df = df.drop(columns=[
+
+            # define which cols need to be removed
+            drop_columns = [
                 'Shared',
                 'Cpu Time',
                 'Node Time',
@@ -33,7 +35,11 @@ try:
                 'Wait Time',
                 'Wall Time',
                 'Eligible Time'
-            ])
+            ]
+
+            # Only drop columns that exist in the DataFrame
+            df = df.drop(columns=[col for col in drop_columns if col in df.columns])
+
             # Transform Hosts column to PostgreSQL array literal format
             df['Hosts'] = df['Hosts'].apply(lambda x: '{' + x.replace(',', ' ') + '}')
 
