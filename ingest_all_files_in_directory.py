@@ -62,6 +62,8 @@ try:
                 'Job Name'  # job name
             ])
 
+            print(df.columns)
+
             # Create a temporary file
             temp_file = tempfile.NamedTemporaryFile(delete=True)
 
