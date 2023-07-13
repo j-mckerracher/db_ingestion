@@ -50,6 +50,14 @@ try:
                 'Job Name': 'jobname'
             }, inplace=True)
 
+            # Define the order of the columns to match the database
+            column_order = ['account', 'jid', 'ncores', 'ngpus', 'nhosts', 'timelimit', 'queue',
+                            'end_time', 'start_time', 'submit_time', 'username', 'exitcode',
+                            'host_list', 'jobname']
+
+            # Reorder the columns in the DataFrame
+            df = df[column_order]
+
             # Write the DataFrame to a new CSV file
             temp_file = tempfile.NamedTemporaryFile(delete=False)
             df.to_csv(temp_file.name, index=False)
