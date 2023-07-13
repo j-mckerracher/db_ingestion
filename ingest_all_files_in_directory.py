@@ -1,7 +1,5 @@
 import os
-from datetime import datetime
 import psycopg2
-import pytz
 import pandas as pd
 import tempfile
 
@@ -27,91 +25,51 @@ try:
             # use pandas to drop columns that we don't need
             df = pd.read_csv(file_path)
 
-            # define which cols need to be removed
-            drop_columns = [
-                'Shared',
-                'Cpu Time',
-                'Node Time',
-                'Requested Nodes',
-                'Wait Time',
-                'Wall Time',
-                'Eligible Time'
-            ]
+            # Drop unnecessary columns
+            df.drop(columns=['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time',
+                             'Eligible Time'], errors='ignore', inplace=True)
 
-            # Only drop columns that exist in the DataFrame
-            df = df.drop(columns=[col for col in drop_columns if col in df.columns])
+            # Transform Hosts column to a space-separated string without braces
+            df['Hosts'] = df['Hosts'].str.replace(',', ' ').str.strip('{}')
 
-            # Ensure the CSV column order matches the table column order
-            df = df.reindex(columns=[
-                'Account',  # Account
-                'Job Id',  # Job ID
-                'Cores',  # Cores
-                'Gpus',  # Gpus
-                'Nodes',  # Nodes
-                'Requested Wall Time',  # Requested Wall Time
-                'Queue',  # Queue
-                'End Time',  # End Time
-                'Start Time',  # Start Time
-                'Submit Time',  # Submit Time
-                'User',  # user
-                'Exit Status',  # Exit Status
-                'Hosts',  # hosts
-                'Job Name'  # job name
-            ])
+            # Rename columns to match the database schema
+            df.rename(columns={
+                'Account': 'account',
+                'Job Id': 'jid',
+                'Cores': 'ncores',
+                'Gpus': 'ngpus',
+                'Nodes': 'nhosts',
+                'Requested Wall Time': 'timelimit',
+                'Queue': 'queue',
+                'End Time': 'end_time',
+                'Start Time': 'start_time',
+                'Submit Time': 'submit_time',
+                'User': 'username',
+                'Exit Status': 'exitcode',
+                'Hosts': 'host_list',
+                'Job Name': 'jobname'
+            }, inplace=True)
 
-            print(df.columns)
-
-            # Create a temporary file
-            temp_file = tempfile.NamedTemporaryFile(delete=True)
-
+            # Write the DataFrame to a new CSV file
+            temp_file = tempfile.NamedTemporaryFile(delete=False)
             df.to_csv(temp_file.name, index=False)
+            temp_file.close()
 
             # Open the temporary file
             with open(temp_file.name, 'r') as f:
                 # Skip the header row
                 next(f)
 
-                # time stuff
-                timezone = pytz.timezone('MST')
-                current_time = datetime.now(timezone)
-                formatted_time = current_time.strftime("%H:%M:%S")
+                print(f"Copying {filename} to the database")
+                # insert the data into the database
+                cur.copy_from(f, 'job_data', sep=',', null="None")
+                print("Done")
 
-                print(f"Started working on {filename} at {formatted_time}.")
+                # Remove the temporary file
+                os.remove(temp_file.name)
 
-                # Add into the job_data table
-                cur.copy_from(f, 'job_data', columns=(
-                    'account',   # Account
-                    'jid',   # Job ID
-                    'ncores',   # Cores
-                    'ngpus',  # Gpus
-                    'nhosts',  # Nodes
-                    'timelimit',  # Requested Wall Time
-                    'queue',  # Queue
-                    'end_time',  # End Time
-                    'start_time',  # Start Time
-                    'submit_time',  # Submit Time
-                    'username',  # user
-                    'exitcode',   # Exit Status
-                    'host_list',  # hosts
-                    'jobname'  # job name
-                ), sep=',', null="None")
-
-                # Add into the host_data table
-                # cur.copy_from(f, 'host_data', columns=(
-                #     'jid',
-                #     'host',
-                #     'event',
-                #     'value',
-                #     'unit',
-                #     'time'), sep=',', null="")
-
-                current_time = datetime.now(timezone)
-                formatted_time = current_time.strftime("%H:%M:%S")
-                print(f"Finished working on {filename} at {formatted_time}.")
-
-            # Close the temporary file (it will be deleted at this point)
-            temp_file.close()
-    conn.commit()
+                # Commit the changes
+            conn.commit()
 except (Exception, psycopg2.Error) as error:
     print("Error while connecting to PostgreSQL", error)
 finally:
