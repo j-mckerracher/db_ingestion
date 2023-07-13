@@ -29,8 +29,8 @@ try:
             df.drop(columns=['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time',
                              'Eligible Time'], errors='ignore', inplace=True)
 
-            # Transform Hosts column to a comma-separated string enclosed in braces
-            df['Hosts'] = df['Hosts'].str.replace(' ', ',').apply(lambda x: '{' + x + '}')
+            # Transform Hosts column to a comma-separated string
+            df['Hosts'] = df['Hosts'].str.replace(' ', ',')
 
             # Rename columns to match the database schema
             df.rename(columns={
@@ -53,11 +53,6 @@ try:
             # Remove any non-alphanumeric characters from 'jobname'
             df['jobname'] = df['jobname'].str.replace(r'\W+', '')
 
-            # Convert date columns to the correct format
-            # date_columns = ['end_time', 'start_time', 'submit_time']
-            # for col in date_columns:
-            #     df[col] = pd.to_datetime(df[col]).dt.strftime('%Y-%m-%d %H:%M:%S')
-
             # Define the order of the columns to match the database
             column_order = ['account', 'jid', 'ncores', 'ngpus', 'nhosts', 'timelimit', 'queue',
                             'end_time', 'start_time', 'submit_time', 'username', 'exitcode',
@@ -71,10 +66,10 @@ try:
             df.to_csv(temp_file.name, index=False)
 
             # Debugging -> Re-open the temporary file in read mode to print
-            with open(temp_file.name, 'r') as f:
-                # Read the first few lines
-                lines = [next(f) for _ in range(50)]
-            print(''.join(lines))
+            # with open(temp_file.name, 'r') as f:
+            #     # Read the first few lines
+            #     lines = [next(f) for _ in range(50)]
+            # print(''.join(lines))
 
             temp_file.close()
 
@@ -93,6 +88,14 @@ try:
 
                 # Commit the changes
             conn.commit()
+
+    # After all files have been processed, convert the host_list column to an array within the database
+    cur.execute("""
+        UPDATE job_data
+        SET host_list = string_to_array(host_list, ',')
+    """)
+    conn.commit()
+
 except (Exception, psycopg2.Error) as error:
     print("Error while connecting to PostgreSQL", error)
 finally:
