@@ -37,6 +37,24 @@ try:
             # Transform Hosts column to PostgreSQL array literal format
             df['Hosts'] = df['Hosts'].apply(lambda x: '{' + x.replace(',', ' ') + '}')
 
+            # Ensure the CSV column order matches the table column order
+            df = df.reindex(columns=[
+                'account',  # Account
+                'jid',  # Job ID
+                'ncores',  # Cores
+                'ngpus',  # Gpus
+                'nhosts',  # Nodes
+                'timelimit',  # Requested Wall Time
+                'queue',  # Queue
+                'end_time',  # End Time
+                'start_time',  # Start Time
+                'submit_time',  # Submit Time
+                'username',  # user
+                'exitcode',  # Exit Status
+                'host_list',  # hosts
+                'jobname'  # job name
+            ])
+
             df.to_csv(file_path, index=False)
 
             # Open the CSV file
