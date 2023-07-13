@@ -66,6 +66,13 @@ try:
             # Write the DataFrame to a new CSV file
             temp_file = tempfile.NamedTemporaryFile(delete=False)
             df.to_csv(temp_file.name, index=False)
+
+            # Debugging -> Re-open the temporary file in read mode to print
+            with open(temp_file.name, 'r') as f:
+                # Read the first few lines
+                lines = [next(f) for _ in range(5)]
+            print(''.join(lines))
+
             temp_file.close()
 
             # Open the temporary file
@@ -75,7 +82,7 @@ try:
 
                 print(f"Copying {filename} to the database")
                 # insert the data into the database
-                cur.copy_from(f, 'job_data', sep=',', null="None")
+                cur.copy_from(f, 'job_data', sep=',', null="None", columns=column_order)
                 print("Done")
 
                 # Remove the temporary file
