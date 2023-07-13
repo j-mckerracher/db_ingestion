@@ -41,13 +41,6 @@ try:
             # Only drop columns that exist in the DataFrame
             df = df.drop(columns=[col for col in drop_columns if col in df.columns])
 
-            # Transform Hosts column to PostgreSQL array literal format
-            try:
-                df['Hosts'] = df['Hosts'].apply(lambda x: '{' + x.replace(',', ' ') + '}' if isinstance(x, str) else x)
-            except Exception as e:
-                print(f"Error while processing 'Hosts' column in file {filename}: {e}")
-                print(df[df['Hosts'].apply(lambda x: not isinstance(x, str) and not pd.isna(x))])
-
             # Ensure the CSV column order matches the table column order
             df = df.reindex(columns=[
                 'Account',  # Account
@@ -101,7 +94,7 @@ try:
                     'exitcode',   # Exit Status
                     'host_list',  # hosts
                     'jobname'  # job name
-                ), sep=',', null="")
+                ), sep=',', null="None")
 
                 # Add into the host_data table
                 # cur.copy_from(f, 'host_data', columns=(
