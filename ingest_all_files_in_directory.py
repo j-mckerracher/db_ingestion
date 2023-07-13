@@ -13,9 +13,6 @@ print(conn.get_dsn_parameters(), "\n")
 # Directory path containing the job_data CSV files
 job_accounting_directory_path = "/mnt/data/JobAccounting"
 
-# Directory path containing the job_data CSV files
-job_resource_usage_directory_path = "/mnt/data/JobResourceUsage"
-
 try:
     # Iterate over each file in the directory
     for filename in os.listdir(job_accounting_directory_path):
@@ -29,8 +26,8 @@ try:
             df.drop(columns=['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time',
                              'Eligible Time'], errors='ignore', inplace=True)
 
-            # Transform Hosts column to a comma-separated string
-            df['Hosts'] = df['Hosts'].str.replace(' ', ',')
+            # Transform Hosts column to a comma-separated string enclosed in braces
+            df['Hosts'] = df['Hosts'].str.replace(' ', ',').apply(lambda x: '{' + x + '}')
 
             # Rename columns to match the database schema
             df.rename(columns={
@@ -66,10 +63,10 @@ try:
             df.to_csv(temp_file.name, index=False)
 
             # Debugging -> Re-open the temporary file in read mode to print
-            # with open(temp_file.name, 'r') as f:
-            #     # Read the first few lines
-            #     lines = [next(f) for _ in range(50)]
-            # print(''.join(lines))
+            with open(temp_file.name, 'r') as f:
+                # Read the first few lines
+                lines = [next(f) for _ in range(50)]
+            print(''.join(lines))
 
             temp_file.close()
 
