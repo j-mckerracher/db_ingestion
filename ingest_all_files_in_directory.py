@@ -29,8 +29,8 @@ try:
             df.drop(columns=['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time',
                              'Eligible Time'], errors='ignore', inplace=True)
 
-            # Transform Hosts column to a space-separated string without braces
-            df['Hosts'] = df['Hosts'].str.replace(',', ' ').str.strip('{}')
+            # Transform Hosts column to a comma-separated string enclosed in braces
+            df['Hosts'] = df['Hosts'].str.replace(' ', ',').apply(lambda x: '{' + x + '}')
 
             # Rename columns to match the database schema
             df.rename(columns={
@@ -51,9 +51,9 @@ try:
             }, inplace=True)
 
             # Convert date columns to the correct format
-            date_columns = ['end_time', 'start_time', 'submit_time']
-            for col in date_columns:
-                df[col] = pd.to_datetime(df[col]).dt.strftime('%Y-%m-%d %H:%M:%S')
+            # date_columns = ['end_time', 'start_time', 'submit_time']
+            # for col in date_columns:
+            #     df[col] = pd.to_datetime(df[col]).dt.strftime('%Y-%m-%d %H:%M:%S')
 
             # Define the order of the columns to match the database
             column_order = ['account', 'jid', 'ncores', 'ngpus', 'nhosts', 'timelimit', 'queue',
