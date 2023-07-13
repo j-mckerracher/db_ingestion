@@ -50,6 +50,9 @@ try:
                 'Job Name': 'jobname'
             }, inplace=True)
 
+            # Remove any non-alphanumeric characters from 'jobname'
+            df['jobname'] = df['jobname'].str.replace(r'\W+', '')
+
             # Convert date columns to the correct format
             # date_columns = ['end_time', 'start_time', 'submit_time']
             # for col in date_columns:
