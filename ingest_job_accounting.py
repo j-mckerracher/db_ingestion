@@ -12,7 +12,7 @@ print("Connected to the database")
 job_accounting_directory_path = "/mnt/data/JobAccounting"
 
 for filename in os.listdir(job_accounting_directory_path):
-    if filename.endswith(".csv") and "job_accounting_sep2022_anon" not in filename and "job_accounting_oct2022_anon.csv" not in filename:
+    if filename.endswith(".csv"):
         file_path = os.path.join(job_accounting_directory_path, filename)
 
         print(f'Starting on {filename}')
