@@ -18,7 +18,10 @@ for filename in os.listdir(job_accounting_directory_path):
         print(f'Starting on {filename}')
 
         # Load the CSV file
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, delimiter=',', parse_dates=['submit_time', 'start_time', 'end_time'])
+
+        # Print out the column names
+        print(df.columns)
 
         # List of unnecessary columns
         columns_to_drop = ['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time',
@@ -29,6 +32,9 @@ for filename in os.listdir(job_accounting_directory_path):
 
         # Drop the unnecessary columns
         df = df.drop(columns=columns_to_drop)
+
+        # Drop rows with missing 'submit_time' values
+        df = df.dropna(subset=['submit_time'])
 
         # Rename the columns to match the database schema
         df = df.rename(columns={
