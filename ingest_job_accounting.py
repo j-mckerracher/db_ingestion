@@ -33,9 +33,6 @@ for filename in os.listdir(job_accounting_directory_path):
         # Drop the unnecessary columns
         df = df.drop(columns=columns_to_drop)
 
-        # Drop rows with missing 'submit_time' values
-        df = df.dropna(subset=['submit_time'])
-
         # Rename the columns to match the database schema
         df = df.rename(columns={
             'Account': 'account',
@@ -53,6 +50,9 @@ for filename in os.listdir(job_accounting_directory_path):
             'Hosts': 'host_list',
             'Job Name': 'jobname'
         })
+
+        # Drop rows with missing 'submit_time' values
+        df = df.dropna(subset=['submit_time'])
 
         print(df.head())
 
