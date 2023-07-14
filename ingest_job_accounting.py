@@ -35,6 +35,8 @@ df['end_time'] = pd.to_datetime(df['end_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
 df['start_time'] = pd.to_datetime(df['start_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
 df['submit_time'] = pd.to_datetime(df['submit_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
 
+print(df.head())
+
 # Connect to the PostgreSQL database
 conn = psycopg2.connect(host="frescodb", dbname="anvil", user="admin", password=f"{os.getenv('DBPW')}")
 cursor = conn.cursor()
