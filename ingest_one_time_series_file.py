@@ -10,7 +10,7 @@ conn = psycopg2.connect(host="frescodb", dbname="anvil", user="admin", password=
 cur = conn.cursor()
 print(conn.get_dsn_parameters(), "\n")
 
-filename = "job_ts_metrics_july2022_anon.csv"
+filename = ""
 
 try:
     # Open the CSV file
