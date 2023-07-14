@@ -36,6 +36,12 @@ df['start_time'] = pd.to_datetime(df['start_time']).dt.strftime('%Y-%m-%d %H:%M:
 df['submit_time'] = pd.to_datetime(df['submit_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
 
 print(df.head())
+# Order the DataFrame columns to match the PostgreSQL table
+df = df[['jid', 'submit_time', 'start_time', 'end_time',
+         'timelimit', 'nhosts', 'ncores', 'ngpus',
+         'username', 'account', 'queue', 'jobname',
+         'exitcode', 'host_list']]
+
 
 # Connect to the PostgreSQL database
 conn = psycopg2.connect(host="frescodb", dbname="anvil", user="admin", password=f"{os.getenv('DBPW')}")
