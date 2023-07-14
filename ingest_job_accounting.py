@@ -49,7 +49,7 @@ for filename in os.listdir(job_accounting_directory_path):
         })
 
         # Convert 'Hosts' to a list
-        df['host_list'] = df['host_list'].str.split(',')
+        df['host_list'] = df['host_list'].astype(str).str.split(',')
 
         # Convert timestamp columns to the appropriate format
         df['end_time'] = pd.to_datetime(df['end_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
