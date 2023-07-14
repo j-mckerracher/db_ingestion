@@ -18,7 +18,7 @@ for filename in os.listdir(job_accounting_directory_path):
         print(f'Starting on {filename}')
 
         # Load the CSV file
-        df = pd.read_csv(file_path, delimiter=',', parse_dates=['submit_time', 'start_time', 'end_time'])
+        df = pd.read_csv(file_path, delimiter=',', parse_dates=['Submit Time', 'Start Time', 'End Time'])
 
         # Print out the column names
         print(df.columns)
