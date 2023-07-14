@@ -12,7 +12,7 @@ print("Connected to the database")
 job_accounting_directory_path = "/mnt/data/JobAccounting"
 
 for filename in os.listdir(job_accounting_directory_path):
-    if filename.endswith(".csv") and "job_accounting_sep2022_anon" not in filename:
+    if filename.endswith(".csv") and "job_accounting_sep2022_anon" not in filename and "job_accounting_oct2022_anon.csv" not in filename:
         file_path = os.path.join(job_accounting_directory_path, filename)
 
         print(f'Starting on {filename}')
@@ -20,8 +20,15 @@ for filename in os.listdir(job_accounting_directory_path):
         # Load the CSV file
         df = pd.read_csv(file_path)
 
+        # List of unnecessary columns
+        columns_to_drop = ['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time',
+                           'Eligible Time']
+
+        # Check if the columns exist in the DataFrame before dropping them
+        columns_to_drop = [col for col in columns_to_drop if col in df.columns]
+
         # Drop the unnecessary columns
-        df = df.drop(columns=['Shared', 'Cpu Time', 'Node Time', 'Requested Nodes', 'Wait Time', 'Wall Time', 'Eligible Time'])
+        df = df.drop(columns=columns_to_drop)
 
         # Rename the columns to match the database schema
         df = df.rename(columns={
