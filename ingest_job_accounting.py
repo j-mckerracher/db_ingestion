@@ -52,9 +52,9 @@ for filename in os.listdir(job_accounting_directory_path):
         df['host_list'] = df['host_list'].astype(str).str.split(',')
 
         # Convert timestamp columns to the appropriate format
-        df['end_time'] = pd.to_datetime(df['end_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
-        df['start_time'] = pd.to_datetime(df['start_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
-        df['submit_time'] = pd.to_datetime(df['submit_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
+        # df['end_time'] = pd.to_datetime(df['end_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
+        # df['start_time'] = pd.to_datetime(df['start_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
+        # df['submit_time'] = pd.to_datetime(df['submit_time']).dt.strftime('%Y-%m-%d %H:%M:%S')
 
         print(df.head())
         # Order the DataFrame columns to match the PostgreSQL table
