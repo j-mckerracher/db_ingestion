@@ -7,14 +7,14 @@ import datetime
 db_password = os.getenv('DBPW')
 
 # Establish a connection to the database
-conn = psycopg2.connect(host="frescodb", dbname="anvil", user="admin", password=db_password)
+conn = psycopg2.connect(host="frescodb", dbname="anvil", user="fresco", password=db_password)
 
 # Create a cursor object
 cur = conn.cursor()
 
 # Define the start and end of the date range
-start_date = datetime.datetime(2023, 4, 1, 0, 0, 0)
-end_date = datetime.datetime(2023, 4, 30, 23, 59, 59)
+start_date = datetime.datetime(2022, 7, 1, 0, 0, 0)
+end_date = datetime.datetime(2022, 7, 31, 23, 59, 59)
 
 # Define the SQL query
 sql_query = """
@@ -22,6 +22,8 @@ sql_query = """
     FROM public.host_data
     WHERE time >= %s AND time <= %s
 """
+
+print("Querying the DB.")
 
 # Record the start time
 start_time = time.time()
