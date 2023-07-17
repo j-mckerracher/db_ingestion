@@ -7,7 +7,7 @@ import datetime
 db_password = os.getenv('DBPW')
 
 # Establish a connection to the database
-conn = psycopg2.connect(host="frescodb", dbname="anvil", user="fresco", password=db_password)
+conn = psycopg2.connect(host="frescodb", dbname="anvil", user="admin", password=db_password)
 
 # Create a cursor object
 cur = conn.cursor()
